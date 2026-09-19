@@ -28,6 +28,7 @@
 	</scm>
 	<properties>
 		<java.version>21</java.version>
+		<spotless.version>2.46.0</spotless.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -113,6 +114,31 @@
 
 	<build>
 		<plugins>
+			<plugin>
+				<groupId>com.diffplug.spotless</groupId>
+				<artifactId>spotless-maven-plugin</artifactId>
+				<version>${spotless.version}</version>
+				<configuration>
+					<java>
+						<googleJavaFormat>
+							<version>1.36.1</version>
+						</googleJavaFormat>
+					</java>
+					<formats>
+						<format>
+							<includes>
+								<include>*.md</include>
+								<include>*.yml</include>
+								<include>*.yaml</include>
+								<include>*.properties</include>
+								<include>src/**/*.sql</include>
+							</includes>
+							<trimTrailingWhitespace/>
+							<endWithNewline/>
+						</format>
+					</formats>
+				</configuration>
+			</plugin>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
