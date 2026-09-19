@@ -13,11 +13,11 @@ import lombok.Setter;
 @AllArgsConstructor
 public class Usuario {
 
-    private Long id;
-    private String nome;
-    private String email;
-    private String senha;
-    private TipoUsuario tipo;
-    private String cpf;
-    private String cnpj;
+  private Long id;
+  private String nome;
+  private String email;
+  private String senha;
+  private TipoUsuario tipo;
+  private String cpf;
+  private String cnpj;
 }

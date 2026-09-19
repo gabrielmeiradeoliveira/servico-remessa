@@ -10,21 +10,21 @@ import lombok.Getter;
 @Getter
 public class CriarUsuarioRequest {
 
-    @NotBlank(message = "Nome é obrigatório")
-    private String nome;
+  @NotBlank(message = "Nome é obrigatório")
+  private String nome;
 
-    @NotBlank(message = "E-mail é obrigatório")
-    @Email(message = "E-mail inválido")
-    private String email;
+  @NotBlank(message = "E-mail é obrigatório")
+  @Email(message = "E-mail inválido")
+  private String email;
 
-    @NotBlank(message = "Senha é obrigatória")
-    @Size(min = 6, message = "Senha deve possuir no mínimo 6 caracteres")
-    private String senha;
+  @NotBlank(message = "Senha é obrigatória")
+  @Size(min = 6, message = "Senha deve possuir no mínimo 6 caracteres")
+  private String senha;
 
-    @NotNull(message = "Tipo do usuário é obrigatório")
-    private TipoUsuario tipo;
+  @NotNull(message = "Tipo do usuário é obrigatório")
+  private TipoUsuario tipo;
 
-    private String cpf;
+  private String cpf;
 
-    private String cnpj;
+  private String cnpj;
 }
