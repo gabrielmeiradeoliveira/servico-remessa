@@ -64,4 +64,16 @@ public class GlobalExceptionHandler {
                         erro.getDefaultMessage()
                 ));
     }
+
+    @ExceptionHandler(CarteiraJaExisteException.class)
+    public ResponseEntity<Map<String, String>> tratarCarteiraJaExiste(
+            CarteiraJaExisteException exception) {
+
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(Map.of(
+                        "mensagem",
+                        exception.getMessage()
+                ));
+    }
 }
