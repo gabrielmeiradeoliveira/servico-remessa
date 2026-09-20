@@ -1,0 +1,6 @@
+services:
+  servico-remessa:
+    build: .
+    image: servico-remessa:latest
+    ports:
+      - "8080:8080"
