@@ -1,10 +1,12 @@
 package com.desafio.remessa.usuario;
 
 import com.desafio.remessa.usuario.domain.Usuario;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.jdbi.v3.core.Handle;
 import org.jdbi.v3.core.Jdbi;
 import org.springframework.stereotype.Repository;
 
@@ -121,12 +123,34 @@ public class UsuarioRepository {
   }
 
   public Long inserir(Usuario usuario) {
+    return jdbi.withHandle(handle -> inserir(handle, usuario));
+  }
+
+  public Long inserirComCarteira(Usuario usuario) {
+    return jdbi.inTransaction(
+        handle -> {
+          Long usuarioId = inserir(handle, usuario);
+
+          handle
+              .createUpdate(
+                  """
+                  INSERT INTO carteira (usuario_id, saldo_real, saldo_dolar)
+                  VALUES (:usuarioId, :saldoReal, :saldoDolar)
+                  """)
+              .bind("usuarioId", usuarioId)
+              .bind("saldoReal", BigDecimal.ZERO)
+              .bind("saldoDolar", BigDecimal.ZERO)
+              .execute();
+
+          return usuarioId;
+        });
+  }
+
+  private Long inserir(Handle handle, Usuario usuario) {
     Long id =
-        jdbi.withHandle(
-            handle ->
-                handle
-                    .createUpdate(
-                        """
+        handle
+            .createUpdate(
+                """
                         INSERT INTO usuario (
                             nome,
                             email,
@@ -144,15 +168,15 @@ public class UsuarioRepository {
                             :cnpj
                         )
                         """)
-                    .bind("nome", usuario.getNome())
-                    .bind("email", usuario.getEmail())
-                    .bind("senha", usuario.getSenha())
-                    .bind("tipo", usuario.getTipo().name())
-                    .bind("cpf", usuario.getCpf())
-                    .bind("cnpj", usuario.getCnpj())
-                    .executeAndReturnGeneratedKeys("id")
-                    .mapTo(Long.class)
-                    .one());
+            .bind("nome", usuario.getNome())
+            .bind("email", usuario.getEmail())
+            .bind("senha", usuario.getSenha())
+            .bind("tipo", usuario.getTipo().name())
+            .bind("cpf", usuario.getCpf())
+            .bind("cnpj", usuario.getCnpj())
+            .executeAndReturnGeneratedKeys("id")
+            .mapTo(Long.class)
+            .one();
     log.debug("Inserção de usuário concluída: id={}", id);
     return id;
   }

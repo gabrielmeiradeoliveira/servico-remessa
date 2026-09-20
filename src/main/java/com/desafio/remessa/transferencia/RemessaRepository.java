@@ -43,6 +43,23 @@ public class RemessaRepository {
                 .one());
   }
 
+  public boolean existeRemessaParaUsuario(Long usuarioId) {
+    return jdbi.withHandle(
+        handle ->
+            handle
+                .createQuery(
+                    """
+                    SELECT EXISTS (
+                        SELECT 1
+                        FROM remessa
+                        WHERE remetente_id = :usuarioId OR destinatario_id = :usuarioId
+                    )
+                    """)
+                .bind("usuarioId", usuarioId)
+                .mapTo(Boolean.class)
+                .one());
+  }
+
   public Long realizarTransferencia(Remessa remessa) {
 
     log.info(

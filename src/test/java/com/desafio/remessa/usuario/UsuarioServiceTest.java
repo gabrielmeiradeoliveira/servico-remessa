@@ -1,22 +1,33 @@
 package com.desafio.remessa.usuario;
 
 import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.desafio.remessa.carteira.CarteiraService;
+import com.desafio.remessa.transferencia.RemessaRepository;
 import com.desafio.remessa.usuario.domain.TipoUsuario;
 import com.desafio.remessa.usuario.domain.Usuario;
+import com.desafio.remessa.usuario.dto.CriarUsuarioRequest;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @ExtendWith(MockitoExtension.class)
 class UsuarioServiceTest {
 
   @Mock private UsuarioRepository usuarioRepository;
+
+  @Mock private PasswordEncoder passwordEncoder;
+
+  @Mock private CarteiraService carteiraService;
+
+  @Mock private RemessaRepository remessaRepository;
 
   @InjectMocks private UsuarioService usuarioService;
 
@@ -51,6 +62,21 @@ class UsuarioServiceTest {
 
     assertSame(usuario, resultado.orElseThrow());
     verify(usuarioRepository).buscarPorCnpj("12345678000190");
+  }
+
+  @Test
+  void deveCriarCarteiraAoCadastrarUsuario() {
+    CriarUsuarioRequest requisicao =
+        new CriarUsuarioRequest(
+            "Ana Silva", "ana@example.com", "senha123", TipoUsuario.PF, "12345678901", null);
+    when(usuarioRepository.buscarPorEmail(requisicao.email())).thenReturn(Optional.empty());
+    when(usuarioRepository.buscarPorCpf(requisicao.cpf())).thenReturn(Optional.empty());
+    when(passwordEncoder.encode(requisicao.senha())).thenReturn("senha-hash");
+    when(usuarioRepository.inserirComCarteira(any(Usuario.class))).thenReturn(10L);
+
+    usuarioService.inserir(requisicao);
+
+    verify(usuarioRepository).inserirComCarteira(any(Usuario.class));
   }
 
   private Usuario usuarioDeTeste() {

@@ -3,6 +3,7 @@ package com.desafio.remessa.usuario;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.desafio.remessa.carteira.CarteiraRepository;
 import com.desafio.remessa.usuario.domain.TipoUsuario;
 import com.desafio.remessa.usuario.domain.Usuario;
 import org.jdbi.v3.core.Jdbi;
@@ -16,11 +17,17 @@ class UsuarioRepositoryIT {
 
   @Autowired private UsuarioRepository usuarioRepository;
 
+  @Autowired private CarteiraRepository carteiraRepository;
+
   @Autowired private Jdbi jdbi;
 
   @BeforeEach
   void limparBanco() {
-    jdbi.useHandle(handle -> handle.execute("DELETE FROM usuario"));
+    jdbi.useHandle(
+        handle -> {
+          handle.execute("DELETE FROM carteira");
+          handle.execute("DELETE FROM usuario");
+        });
   }
 
   @Test
@@ -59,6 +66,24 @@ class UsuarioRepositoryIT {
 
     assertTrue(usuario.isPresent());
     assertEquals(id, usuario.get().getId());
+  }
+
+  @Test
+  void deveInserirUsuarioComCarteira() {
+    Long usuarioId =
+        usuarioRepository.inserirComCarteira(
+            Usuario.builder()
+                .nome("Ana Silva")
+                .email("ana.silva@example.com")
+                .senha("hash-de-teste")
+                .tipo(TipoUsuario.PF)
+                .cpf("12345678901")
+                .build());
+
+    var carteira = carteiraRepository.buscarPorUsuarioId(usuarioId);
+
+    assertTrue(carteira.isPresent());
+    assertEquals(usuarioId, carteira.orElseThrow().getUsuarioId());
   }
 
   private Long criarPessoaFisica() {

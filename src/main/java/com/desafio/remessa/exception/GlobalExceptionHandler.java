@@ -73,4 +73,12 @@ public class GlobalExceptionHandler {
     return ResponseEntity.status(HttpStatus.CONFLICT)
         .body(Map.of("mensagem", exception.getMessage()));
   }
+
+  @ExceptionHandler(UsuarioPossuiRemessasException.class)
+  public ResponseEntity<Map<String, String>> tratarUsuarioPossuiRemessas(
+      UsuarioPossuiRemessasException exception) {
+
+    return ResponseEntity.status(HttpStatus.CONFLICT)
+        .body(Map.of("mensagem", exception.getMessage()));
+  }
 }
