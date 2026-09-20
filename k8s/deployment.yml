@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: servico-remessa
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: servico-remessa
+  template:
+    metadata:
+      labels:
+        app: servico-remessa
+    spec:
+      containers:
+        - name: servico-remessa
+          image: servico-remessa:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+          envFrom:
+            - secretRef:
+                name: servico-remessa-secret
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+            initialDelaySeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+            initialDelaySeconds: 20
