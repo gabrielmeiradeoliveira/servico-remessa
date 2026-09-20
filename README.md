@@ -37,6 +37,20 @@ docker compose down
 
 Depois da inicialização, a API estará em `http://localhost:8080`; Swagger e H2 permanecem disponíveis nos mesmos endereços descritos abaixo.
 
+## Kubernetes
+
+Os manifestos mínimos estão em `k8s/`. Eles criam um `Deployment` com uma réplica, um `Service` interno e um `Secret` para as credenciais do H2.
+
+```bash
+docker build -t servico-remessa:latest .
+kubectl apply -f k8s/
+kubectl port-forward service/servico-remessa 8080:80
+```
+
+A imagem `servico-remessa:latest` deve estar disponível para os nós do cluster. Em um cluster remoto, publique a imagem em um registry e altere `image` em `k8s/deployment.yml`. Também substitua os valores de exemplo em `k8s/secret.yml` por um Secret gerenciado fora do Git.
+
+O H2 é em memória; por isso, mantenha apenas uma réplica e não use essa configuração para dados persistentes.
+
 ## Compilar e testar
 
 ```bash
