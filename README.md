@@ -47,7 +47,7 @@ kubectl apply -f k8s/
 kubectl port-forward service/servico-remessa 8080:80
 ```
 
-A imagem `servico-remessa:latest` deve estar disponível para os nós do cluster. Em um cluster remoto, publique a imagem em um registry e altere `image` em `k8s/deployment.yml`.
+A imagem `servico-remessa:latest` deve estar disponível para os nós do cluster. Em um cluster remoto, publique a imagem em um registry e altere `image` em `k8s/deployment.yml`. Também substitua os valores de exemplo em `k8s/secret.yml` por um Secret gerenciado fora do Git.
 
 O H2 é em memória; por isso, mantenha apenas uma réplica e não use essa configuração para dados persistentes.
 
