@@ -50,4 +50,27 @@ public class GlobalExceptionHandler {
     return ResponseEntity.status(HttpStatus.CONFLICT)
         .body(Map.of("mensagem", exception.getMessage()));
   }
+
+  @ExceptionHandler(CarteiraNaoEncontradaException.class)
+  public ResponseEntity<Map<String, String>> tratarCarteiraNaoEncontrada(
+      CarteiraNaoEncontradaException exception) {
+
+    return ResponseEntity.status(HttpStatus.NOT_FOUND)
+        .body(Map.of("mensagem", exception.getMessage()));
+  }
+
+  @ExceptionHandler(RemessaInvalidaException.class)
+  public ResponseEntity<Map<String, String>> tratarRemessaInvalida(
+      RemessaInvalidaException exception) {
+
+    return ResponseEntity.badRequest().body(Map.of("mensagem", exception.getMessage()));
+  }
+
+  @ExceptionHandler(RemessaNaoProcessadaException.class)
+  public ResponseEntity<Map<String, String>> tratarRemessaNaoProcessada(
+      RemessaNaoProcessadaException exception) {
+
+    return ResponseEntity.status(HttpStatus.CONFLICT)
+        .body(Map.of("mensagem", exception.getMessage()));
+  }
 }
