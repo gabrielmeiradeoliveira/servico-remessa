@@ -44,22 +44,22 @@ public class UsuarioService {
   }
 
   public Long inserir(CriarUsuarioRequest requisicao) {
-    log.info("Criando usuário: tipo={}", requisicao.getTipo());
+    log.info("Criando usuário: tipo={}", requisicao.tipo());
 
-    validarTipoEDocumento(requisicao.getTipo(), requisicao.getCpf(), requisicao.getCnpj());
+    validarTipoEDocumento(requisicao.tipo(), requisicao.cpf(), requisicao.cnpj());
 
-    validarDuplicidadeCadastro(requisicao.getEmail(), requisicao.getCpf(), requisicao.getCnpj());
+    validarDuplicidadeCadastro(requisicao.email(), requisicao.cpf(), requisicao.cnpj());
 
-    String senhaHash = passwordEncoder.encode(requisicao.getSenha());
+    String senhaHash = passwordEncoder.encode(requisicao.senha());
 
     var usuario =
         Usuario.builder()
-            .nome(requisicao.getNome())
-            .email(requisicao.getEmail())
+            .nome(requisicao.nome())
+            .email(requisicao.email())
             .senha(senhaHash)
-            .tipo(requisicao.getTipo())
-            .cpf(requisicao.getCpf())
-            .cnpj(requisicao.getCnpj())
+            .tipo(requisicao.tipo())
+            .cpf(requisicao.cpf())
+            .cnpj(requisicao.cnpj())
             .build();
 
     Long id = usuarioRepository.inserir(usuario);

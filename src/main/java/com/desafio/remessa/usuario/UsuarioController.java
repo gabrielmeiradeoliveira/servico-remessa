@@ -35,7 +35,7 @@ public class UsuarioController {
   @PostMapping
   @Operation(summary = "Cadastra um novo usuário")
   public ResponseEntity<Void> inserir(@Valid @RequestBody CriarUsuarioRequest requisicao) {
-    log.info("Solicitação recebida para criar usuário: tipo={}", requisicao.getTipo());
+    log.info("Solicitação recebida para criar usuário: tipo={}", requisicao.tipo());
     Long id = usuarioService.inserir(requisicao);
     log.info("Usuário criado com sucesso: id={}", id);
     return ResponseEntity.created(URI.create("/usuarios/" + id)).build();
