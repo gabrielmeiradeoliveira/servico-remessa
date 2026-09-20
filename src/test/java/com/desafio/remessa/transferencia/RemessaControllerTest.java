@@ -3,7 +3,6 @@ package com.desafio.remessa.transferencia;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -47,7 +46,6 @@ class RemessaControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requisicaoJson()))
         .andExpect(status().isCreated())
-        .andExpect(header().string("Location", "/transferencias/10"))
         .andExpect(jsonPath("$.id").value(10L))
         .andExpect(jsonPath("$.valorDolar").value(20.00))
         .andExpect(jsonPath("$.status").value("CONCLUIDA"));

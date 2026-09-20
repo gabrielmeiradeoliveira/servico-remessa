@@ -2,6 +2,7 @@ package com.desafio.remessa.carteira;
 
 import com.desafio.remessa.carteira.domain.Carteira;
 import com.desafio.remessa.exception.CarteiraJaExisteException;
+import com.desafio.remessa.exception.CarteiraNaoEncontradaException;
 import com.desafio.remessa.exception.UsuarioNaoEncontradoException;
 import com.desafio.remessa.usuario.UsuarioRepository;
 import java.math.BigDecimal;
@@ -48,6 +49,20 @@ public class CarteiraService {
     log.debug("Atualizando saldos da carteira: usuarioId={}", carteira.getUsuarioId());
 
     return carteiraRepository.atualizarSaldos(carteira);
+  }
+
+  public void creditarSaldoReal(Long usuarioId, BigDecimal valor) {
+    validarUsuarioExistente(usuarioId);
+
+    if (!carteiraRepository.creditarSaldoReal(usuarioId, valor)) {
+      throw new CarteiraNaoEncontradaException("Carteira não encontrada");
+    }
+
+    log.info("Saldo em reais creditado: usuarioId={}, valor={}", usuarioId, valor);
+  }
+
+  public void excluirPorUsuarioId(Long usuarioId) {
+    carteiraRepository.excluirPorUsuarioId(usuarioId);
   }
 
   private void validarUsuarioExistente(Long usuarioId) {

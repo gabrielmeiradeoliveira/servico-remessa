@@ -1,7 +1,10 @@
 package com.desafio.remessa.usuario;
 
+import com.desafio.remessa.carteira.CarteiraService;
 import com.desafio.remessa.exception.UsuarioInvalidoException;
 import com.desafio.remessa.exception.UsuarioJaExisteException;
+import com.desafio.remessa.exception.UsuarioPossuiRemessasException;
+import com.desafio.remessa.transferencia.RemessaRepository;
 import com.desafio.remessa.usuario.domain.TipoUsuario;
 import com.desafio.remessa.usuario.domain.Usuario;
 import com.desafio.remessa.usuario.dto.AtualizarUsuarioRequest;
@@ -20,6 +23,8 @@ public class UsuarioService {
 
   private final UsuarioRepository usuarioRepository;
   private final PasswordEncoder passwordEncoder;
+  private final CarteiraService carteiraService;
+  private final RemessaRepository remessaRepository;
 
   public Optional<Usuario> buscarPorId(Long id) {
     log.debug("Buscando usuário por id={}", id);
@@ -62,9 +67,9 @@ public class UsuarioService {
             .cnpj(requisicao.cnpj())
             .build();
 
-    Long id = usuarioRepository.inserir(usuario);
+    Long id = usuarioRepository.inserirComCarteira(usuario);
 
-    log.info("Usuário persistido: id={}", id);
+    log.info("Usuário e carteira persistidos: id={}", id);
 
     return id;
   }
@@ -108,6 +113,12 @@ public class UsuarioService {
   }
 
   public boolean excluir(Long id) {
+    if (remessaRepository.existeRemessaParaUsuario(id)) {
+      throw new UsuarioPossuiRemessasException(
+          "Usuário não pode ser excluído porque possui remessas associadas");
+    }
+
+    carteiraService.excluirPorUsuarioId(id);
     boolean excluido = usuarioRepository.excluir(id);
 
     log.info("Exclusão de usuário concluída: id={}, excluído={}", id, excluido);

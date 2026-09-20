@@ -5,7 +5,6 @@ import com.desafio.remessa.transferencia.dto.RemessaResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import java.net.URI;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -35,7 +34,6 @@ public class RemessaController {
 
     var remessa = remessaService.criar(request);
 
-    return ResponseEntity.created(URI.create("/transferencias/" + remessa.getId()))
-        .body(RemessaResponse.from(remessa));
+    return ResponseEntity.status(201).body(RemessaResponse.from(remessa));
   }
 }

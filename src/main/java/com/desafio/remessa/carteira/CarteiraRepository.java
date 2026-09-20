@@ -1,6 +1,7 @@
 package com.desafio.remessa.carteira;
 
 import com.desafio.remessa.carteira.domain.Carteira;
+import java.math.BigDecimal;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -80,6 +81,40 @@ public class CarteiraRepository {
                     .bind("saldoReal", carteira.getSaldoReal())
                     .bind("saldoDolar", carteira.getSaldoDolar())
                     .bind("usuarioId", carteira.getUsuarioId())
+                    .execute());
+
+    return linhasAfetadas > 0;
+  }
+
+  public boolean creditarSaldoReal(Long usuarioId, BigDecimal valor) {
+    log.debug("Creditando saldo em reais: usuarioId={}, valor={}", usuarioId, valor);
+
+    int linhasAfetadas =
+        jdbi.withHandle(
+            handle ->
+                handle
+                    .createUpdate(
+                        """
+                        UPDATE carteira
+                        SET saldo_real = saldo_real + :valor
+                        WHERE usuario_id = :usuarioId
+                        """)
+                    .bind("usuarioId", usuarioId)
+                    .bind("valor", valor)
+                    .execute());
+
+    return linhasAfetadas > 0;
+  }
+
+  public boolean excluirPorUsuarioId(Long usuarioId) {
+    log.debug("Excluindo carteira: usuarioId={}", usuarioId);
+
+    int linhasAfetadas =
+        jdbi.withHandle(
+            handle ->
+                handle
+                    .createUpdate("DELETE FROM carteira WHERE usuario_id = :usuarioId")
+                    .bind("usuarioId", usuarioId)
                     .execute());
 
     return linhasAfetadas > 0;

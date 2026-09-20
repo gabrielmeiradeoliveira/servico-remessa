@@ -63,6 +63,18 @@ class CarteiraControllerTest {
     mockMvc.perform(get("/carteiras/usuario/{usuarioId}", 999L)).andExpect(status().isNotFound());
   }
 
+  @Test
+  void deveCreditarSaldoReal() throws Exception {
+    mockMvc
+        .perform(
+            post("/carteiras/usuario/{usuarioId}/creditos", 1L)
+                .contentType("application/json")
+                .content("{\"valorReal\": 100.00}"))
+        .andExpect(status().isNoContent());
+
+    verify(carteiraService).creditarSaldoReal(1L, new BigDecimal("100.00"));
+  }
+
   private Carteira carteiraDeTeste() {
     return Carteira.builder()
         .id(10L)

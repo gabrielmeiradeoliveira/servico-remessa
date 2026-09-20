@@ -1,8 +1,10 @@
 package com.desafio.remessa.carteira;
 
 import com.desafio.remessa.carteira.dto.CarteiraResponse;
+import com.desafio.remessa.carteira.dto.CreditarSaldoRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import java.net.URI;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -44,5 +46,14 @@ public class CarteiraController {
     }
 
     return ResponseEntity.ok(CarteiraResponse.from(carteira.get()));
+  }
+
+  @PostMapping("/usuario/{usuarioId}/creditos")
+  @Operation(summary = "Credita saldo em reais na carteira de um usuário")
+  public ResponseEntity<Void> creditarSaldoReal(
+      @PathVariable Long usuarioId, @Valid @RequestBody CreditarSaldoRequest requisicao) {
+
+    carteiraService.creditarSaldoReal(usuarioId, requisicao.valorReal());
+    return ResponseEntity.noContent().build();
   }
 }
