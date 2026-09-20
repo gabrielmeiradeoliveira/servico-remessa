@@ -3,13 +3,13 @@ package com.desafio.remessa.usuario;
 import com.desafio.remessa.usuario.domain.Usuario;
 import java.util.List;
 import java.util.Optional;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jdbi.v3.core.Jdbi;
 import org.springframework.stereotype.Repository;
 
 @Repository
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Slf4j
 public class UsuarioRepository {
 
